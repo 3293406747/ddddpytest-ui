@@ -1,9 +1,10 @@
-*.pyc
 .pytest_cache
+.idea
 logs
 reports
-.idea
 temp
+err_img
+*.pyc
 *.html
 *.json
 *.log
