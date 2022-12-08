@@ -12,10 +12,10 @@ class BaiduPage(BasePage):
 	su = By.ID, "su"
 
 	def baidu_select(self,text=None):
-		# 百度搜索
+		""" 百度搜索 """
 		try:
-			self.send_keys(text,loc=self.kw) if text else ...
-			self.click(loc=self.su)
+			self.write(text, into=self.kw) if text else ...
+			self.click(location=self.su)
 		except Exception as why:
 			self.quit()
 			raise Exception(why)

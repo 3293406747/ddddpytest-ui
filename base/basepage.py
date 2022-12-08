@@ -50,10 +50,10 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def find_element(self, loc: tuple, expected_conditions=None, timeout=10, **kwargs):
+	def find_element(self, location: tuple, expected_conditions=None, timeout=10, **kwargs):
 		"""
 		查找单个元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param expected_conditions: 元素等待方式
 		:param timeout: 元素等待超时时间
 		:param kwargs: WebDriverWait对象的其它参数
@@ -67,13 +67,13 @@ class BasePage:
 			expected_conditions = EC.visibility_of_element_located
 			expected_conditions = EC.element_to_be_clickable
 		"""
-		if not isinstance(loc, tuple):
+		if not isinstance(location, tuple):
 			msg = "loc must is tuple"
 			raise Exception(msg)
 		try:
 			wait = WebDriverWait(driver=self.driver, timeout=timeout, **kwargs)
 			method = expected_conditions or EC.presence_of_element_located
-			elem = wait.until(method(loc))
+			elem = wait.until(method(location))
 			logger.debug("元素找到")
 			return elem
 		except Exception as why:
@@ -81,26 +81,26 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def find_elements(self, loc: tuple, expected_conditions=None, **kwargs):
+	def find_elements(self, location: tuple, expected_conditions=None, **kwargs):
 		"""
 			查找一组元素
 			使用方法参考find_element方法
 		"""
 		elems = self.find_element(
-			loc=loc, expected_conditions=expected_conditions or EC.presence_of_all_elements_located, **kwargs
+			location=location, expected_conditions=expected_conditions or EC.presence_of_all_elements_located, **kwargs
 		)
 		return elems
 
-	def send_keys(self, *args, loc, **kwargs):
+	def write(self, *args, into, **kwargs):
 		"""
 		向输入框输入内容
 		:param args: 要输入的内容
-		:param loc: 元素定位方式及表达式
+		:param into: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
-			elem = self.find_element(loc=loc, **kwargs)
+			elem = self.find_element(location=into, **kwargs)
 			ActionChains(driver=self.driver).click(elem).send_keys(*args).perform()
 			logger.info(f"向输入框中输入内容成功")
 		except Exception as why:
@@ -108,16 +108,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def click(self, loc, **kwargs):
+	def click(self, location, **kwargs):
 		"""
 		点击元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, expected_conditions=EC.element_to_be_clickable, **kwargs
+				location=location, expected_conditions=EC.element_to_be_clickable, **kwargs
 			)
 			elem.click()
 			logger.info("元素点击成功")
@@ -126,16 +126,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def clear(self, loc, **kwargs):
+	def clear(self, location, **kwargs):
 		"""
 		清除输入框中的内容
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, expected_conditions=EC.visibility_of_element_located, **kwargs
+				location=location, expected_conditions=EC.visibility_of_element_located, **kwargs
 			)
 			elem.clear()
 			logger.info("输入框清除成功")
@@ -144,18 +144,18 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def switch_to_frame(self, loc=None, **kwargs):
+	def switch_to_frame(self, location=None, **kwargs):
 		"""
 		切换到frame或退出frame loc为None时为退出frame,否则为进入frame
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
-			if loc:
+			if location:
 				# 切换到frame
 				self.find_element(
-					loc=loc, expected_conditions=EC.frame_to_be_available_and_switch_to_it, **kwargs
+					location=location, expected_conditions=EC.frame_to_be_available_and_switch_to_it, **kwargs
 				)
 				logger.info("切换到frame成功")
 			else:
@@ -184,7 +184,7 @@ class BasePage:
 				raise Exception(msg)
 			logger.info("切换到弹窗成功")
 			if send_keys:
-				alert.send_keys(send_keys)
+				alert.write(send_keys)
 				logger.info("弹窗中输入内容成功")
 			alert.accept()
 			logger.info("弹窗已接受")
@@ -237,15 +237,15 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def get_text(self, loc, **kwargs):
+	def get_text(self, location, **kwargs):
 		"""
 		获取元素内文本
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 元素内文本
 		"""
 		try:
-			text = self.find_element(loc=loc, **kwargs).text
+			text = self.find_element(location=location, **kwargs).text
 			logger.debug("获取元素内文本成功。")
 			return text
 		except Exception as why:
@@ -253,16 +253,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def get_attribute(self, loc, name, **kwargs):
+	def get_attribute(self, location, name, **kwargs):
 		"""
 		获取元素属性对应的文本值
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param name: 元素属性名
 		:param kwargs: find_element的其它参数
 		:return: 元素属性对应的文本值
 		"""
 		try:
-			text = self.find_element(loc=loc, **kwargs).get_attribute(name)
+			text = self.find_element(location=location, **kwargs).get_attribute(name)
 			logger.debug(f"获取元素属性{name}文本成功。")
 			return text
 		except Exception as why:
@@ -270,15 +270,15 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def get_texts(self, loc, **kwargs) -> list:
+	def get_texts(self, location, **kwargs) -> list:
 		"""
 		获取一组元素的文本
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_elements的其它参数
 		:return: 一组元素文本列表
 		"""
 		try:
-			elems = self.find_elements(loc=loc, **kwargs)
+			elems = self.find_elements(location=location, **kwargs)
 			texts = [elem.text for elem in elems]
 			logger.debug("获取一组元素内文本成功。")
 			return texts
@@ -287,16 +287,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def get_attributes(self, loc, name, **kwargs) -> list:
+	def get_attributes(self, location, name, **kwargs) -> list:
 		"""
 		获取一组元素属性对应的文本值
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param name: 元素属性名
 		:param kwargs: find_elements的其它参数
 		:return: 一组元素属性文本值列表
 		"""
 		try:
-			elems = self.find_elements(loc=loc, **kwargs)
+			elems = self.find_elements(location=location, **kwargs)
 			texts = [elem.get_attribute(name) for elem in elems]
 			logger.debug(f"获取一组元素属性{name}文本成功。")
 			return texts
@@ -305,17 +305,17 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def select(self, loc, value, method="index", **kwargs):
+	def select(self, location, value, method="index", **kwargs):
 		"""
 		select下拉框/复选框选择
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param value: method对应的值
 		:param method: 选择方法，支持index、value、text
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
-			elem = self.find_element(loc=loc, **kwargs)
+			elem = self.find_element(location=location, **kwargs)
 			sel = Select(elem)
 			if method == "index":
 				sel.select_by_index(value)
@@ -335,15 +335,15 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def deselect_all(self, loc, **kwargs):
+	def deselect_all(self, location, **kwargs):
 		"""
 		select下拉框/复选框取消所有选项
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
-			elem = self.find_element(loc=loc, **kwargs)
+			elem = self.find_element(location=location, **kwargs)
 			sel = Select(elem)
 			sel.deselect_all()
 			logger.info("select下拉框/复选框全部元素取消选择成功")
@@ -352,10 +352,10 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def checkbox_status(self, loc, **kwargs) -> bool:
+	def checkbox_status(self, location, **kwargs) -> bool:
 		""" 检查选择框元素状态 """
 		try:
-			result = self.find_element(loc=loc, **kwargs)
+			result = self.find_element(location=location, **kwargs)
 			logger.debug(f"检查选择框元素状态成功，元素状态为{'选择' if result else '未选择'}")
 			return result
 		except Exception as why:
@@ -363,16 +363,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def check_checkbox(self, loc, **kwargs):
+	def check_checkbox(self, location, **kwargs):
 		"""
 		选择选择框元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
-			if not self.checkbox_status(loc, **kwargs):
-				self.click(loc)
+			if not self.checkbox_status(location, **kwargs):
+				self.click(location)
 				logger.info("元素选择成功")
 			else:
 				logger.error("元素选择失败，元素已被选择")
@@ -384,16 +384,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def uncheck_checkbox(self, loc, **kwargs):
+	def uncheck_checkbox(self, location, **kwargs):
 		"""
 		取消选择选择框元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
-			if self.checkbox_status(loc, **kwargs):
-				self.click(loc)
+			if self.checkbox_status(location, **kwargs):
+				self.click(location)
 				logger.info("元素取消选择成功")
 			else:
 				logger.error("元素取消选择失败，元素未被选择")
@@ -418,13 +418,13 @@ class BasePage:
 			logger.error(f"屏幕截图失败，原因：{why}")
 			raise Exception(why)
 
-	def elem_save_screenshot(self, loc, **kwargs):
+	def elem_save_screenshot(self, location, **kwargs):
 		""" 保存元素截图 """
 		path = Path(__file__).resolve().parent.parent.joinpath("err_img", time.strftime('%Y-%m-%d'))
 		path.mkdir(parents=True, exist_ok=True)
 		filename = path.joinpath(time.strftime('elem_%H%M%S') + ".png")
 		try:
-			elem = self.find_element(loc=loc, **kwargs)
+			elem = self.find_element(location=location, **kwargs)
 			elem.screenshot(filename)
 			logger.debug(f"元素截图已保存，屏幕截图保存路径：{filename}")
 		except Exception as why:
@@ -432,16 +432,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def click_by_js(self, loc, **kwargs):
+	def click_by_js(self, location, **kwargs):
 		"""
 		点击元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, expected_conditions=EC.element_to_be_clickable, **kwargs
+				location=location, expected_conditions=EC.element_to_be_clickable, **kwargs
 			)
 			self.driver.execute_script("arguments[0].click();", elem)
 			logger.info("元素点击成功")
@@ -450,16 +450,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def scroll_into_view(self, loc, **kwargs):
+	def scroll_into_view(self, location, **kwargs):
 		"""
 		滚动到元素可见位置
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, expected_conditions=EC.visibility_of_element_located, **kwargs
+				location=location, expected_conditions=EC.visibility_of_element_located, **kwargs
 			)
 			self.driver.execute_script("arguments[0].scrollIntoView(false);", elem)
 			logger.debug("滚动到元素可见位置成功")
@@ -468,16 +468,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def double_click(self, loc, **kwargs):
+	def double_click(self, location, **kwargs):
 		"""
 		双击元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, **kwargs
+				location=location, **kwargs
 			)
 			ActionChains(driver=self.driver).double_click(elem).perform()
 			logger.info("双击元素成功")
@@ -486,16 +486,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def right_click(self, loc, **kwargs):
+	def right_click(self, location, **kwargs):
 		"""
 		右击元素
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, **kwargs
+				location=location, **kwargs
 			)
 			ActionChains(driver=self.driver).context_click(elem).perform()
 			logger.info("右击元素成功")
@@ -504,16 +504,16 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def mouse_hover(self, loc, **kwargs):
+	def mouse_hover(self, location, **kwargs):
 		"""
 		在元素上悬停
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, **kwargs
+				location=location, **kwargs
 			)
 			ActionChains(driver=self.driver).move_to_element(elem).perform()
 			logger.info("在元素上悬停成功")
@@ -522,10 +522,10 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def drag_and_drop_by_offset(self, loc, xoffset, yoffset, **kwargs):
+	def drag_and_drop_by_offset(self, location, xoffset, yoffset, **kwargs):
 		"""
 		将元素拖动到指定位置
-		:param loc: 元素定位方式及表达式
+		:param location: 元素定位方式及表达式
 		:param xoffset: 目标位置x坐标
 		:param yoffset: 目标位置y坐标
 		:param kwargs: find_element的其它参数
@@ -533,7 +533,7 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(
-				loc=loc, **kwargs
+				location=location, **kwargs
 			)
 			ActionChains(driver=self.driver).drag_and_drop_by_offset(elem, xoffset, yoffset).perform()
 			logger.info("将元素拖拽到指定位置成功")
@@ -542,20 +542,20 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def drag_and_drop(self, loc_source, loc_target, **kwargs):
+	def drag_and_drop(self, location_source, location_target, **kwargs):
 		"""
 		将元素拖动到另一个元素上
-		:param loc_source: 元素定位方式及表达式
-		:param loc_target: 拖动到的目标元素定位方式及表达式
+		:param location_source: 元素定位方式及表达式
+		:param location_target: 拖动到的目标元素定位方式及表达式
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
 		try:
 			source = self.find_element(
-				loc=loc_source, **kwargs
+				location=location_source, **kwargs
 			)
 			target = self.find_element(
-				loc=loc_target, **kwargs
+				location=location_target, **kwargs
 			)
 			ActionChains(driver=self.driver).drag_and_drop(source, target).perform()
 			logger.info("将元素拖拽到另一个元素上成功")
