@@ -1,0 +1,7 @@
+selenium
+openpyxl
+PyYAML
+PyMySQL
+loguru
+pytest
+Faker
