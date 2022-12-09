@@ -45,6 +45,7 @@ class BasePage:
 		try:
 			self.driver.get(url)
 			logger.info(f"访问url：{url}成功")
+			allure.attach(body=url, name="url", attachment_type=allure.attachment_type.TEXT)
 		except Exception as why:
 			logger.error(f"访问url：{url}失败，原因：{why}")
 			self.save_screenshot()
@@ -101,8 +102,11 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(location=into, **kwargs)
-			ActionChains(driver=self.driver).click(elem).send_keys(*args).perform()
-			logger.info(f"向输入框中输入内容成功")
+			if args and all(args):
+				ActionChains(driver=self.driver).click(elem).send_keys(*args).perform()
+				logger.info(f"向输入框中输入内容成功")
+			else:
+				logger.info("未向输入框输入内容或向输入框中输入了不正确的内容")
 		except Exception as why:
 			logger.error(f"向输入框中输入内容失败，原因{why}")
 			self.save_screenshot()

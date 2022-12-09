@@ -17,4 +17,4 @@ class TestBaidu:
 	def test_select(self,case,page):
 		allure.dynamic.title(case["用例名称"])
 		page.get(page.url)
-		page.baidu_select(text=case["input_text"])
+		page.baidu_select(case["input_text"])
