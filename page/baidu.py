@@ -14,6 +14,8 @@ class BaiduPage(BasePage):
 	def baidu_select(self,*args):
 		""" 百度搜索 """
 		try:
+			if self.driver.current_url != self.url:
+				self.driver.get(self.url)
 			self.write(*args, into=self.kw)
 			self.click(location=self.su)
 		except Exception as why:
