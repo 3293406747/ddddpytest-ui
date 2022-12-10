@@ -99,12 +99,9 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(location=into, **kwargs)
-			if args and all(args):
-				self.click(location=into)
-				elem.send_keys(*args)
-				logger.info(f"向输入框中输入内容成功")
-			else:
-				logger.info("未向输入框输入内容或向输入框中输入了不正确的内容")
+			self.click(location=into)
+			elem.send_keys(*args)
+			logger.info(f"向输入框中输入内容成功")
 		except Exception as why:
 			logger.error(f"向输入框中输入内容失败，原因{why}")
 			self.save_screenshot()
