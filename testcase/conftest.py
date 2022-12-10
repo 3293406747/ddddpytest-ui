@@ -7,7 +7,7 @@ from common.logger.logger import logger
 
 @pytest.fixture(scope="session",autouse=True)
 def driver():
-	driver = webdriver.Firefox()
+	driver = webdriver.Chrome()
 	basepage = BasePage(driver)
 	basepage.maximize_window()
 	yield driver

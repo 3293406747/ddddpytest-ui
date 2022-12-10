@@ -19,12 +19,7 @@ class BasePage:
 		driver示例：
 			driver = webdriver.Firefox()
 		"""
-		try:
-			self.driver = driver
-			logger.debug("浏览器打开成功")
-		except Exception as why:
-			logger.error(f"浏览器打开失败，原因：{why}")
-			raise Exception(why)
+		self.driver = driver
 
 	def maximize_window(self):
 		""" 浏览器最大化 """
@@ -88,7 +83,9 @@ class BasePage:
 			使用方法参考find_element方法
 		"""
 		elems = self.find_element(
-			location=location, expected_conditions=expected_conditions or EC.presence_of_all_elements_located, **kwargs
+			location=location,
+			expected_conditions=expected_conditions or EC.presence_of_all_elements_located,
+			**kwargs
 		)
 		return elems
 
@@ -103,7 +100,8 @@ class BasePage:
 		try:
 			elem = self.find_element(location=into, **kwargs)
 			if args and all(args):
-				ActionChains(driver=self.driver).click(elem).send_keys(*args).perform()
+				self.click(location=into)
+				elem.send_keys(*args)
 				logger.info(f"向输入框中输入内容成功")
 			else:
 				logger.info("未向输入框输入内容或向输入框中输入了不正确的内容")
@@ -121,9 +119,10 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(
-				location=location, expected_conditions=EC.element_to_be_clickable, **kwargs
+				location=location,
+				**kwargs
 			)
-			elem.click()
+			ActionChains(self.driver).click(elem).perform()
 			logger.info("元素点击成功")
 		except Exception as why:
 			logger.error(f"元素点击失败，原因：{why}")
@@ -139,7 +138,9 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(
-				location=location, expected_conditions=EC.visibility_of_element_located, **kwargs
+				location=location,
+				expected_conditions=EC.visibility_of_element_located,
+				**kwargs
 			)
 			elem.clear()
 			logger.info("输入框清除成功")
@@ -159,7 +160,9 @@ class BasePage:
 			if location:
 				# 切换到frame
 				self.find_element(
-					location=location, expected_conditions=EC.frame_to_be_available_and_switch_to_it, **kwargs
+					location=location,
+					expected_conditions=EC.frame_to_be_available_and_switch_to_it,
+					**kwargs
 				)
 				logger.info("切换到frame成功")
 			else:
