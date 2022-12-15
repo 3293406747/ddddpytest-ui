@@ -5,7 +5,7 @@ from base.basepage import BasePage
 from common.logger.logger import logger
 
 
-@pytest.fixture(scope="session",autouse=True)
+@pytest.fixture(scope="package",autouse=True)
 def driver():
 	driver = webdriver.Chrome()
 	basepage = BasePage(driver)

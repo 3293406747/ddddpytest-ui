@@ -1,5 +1,5 @@
 import time
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -77,17 +77,22 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def find_elements(self, location: tuple, expected_conditions=None, **kwargs):
+	def find_elements(self, location: tuple):
 		"""
 			查找一组元素
 			使用方法参考find_element方法
 		"""
-		elems = self.find_element(
-			location=location,
-			expected_conditions=expected_conditions or EC.presence_of_all_elements_located,
-			**kwargs
-		)
-		return elems
+		if not isinstance(location, tuple):
+			msg = "loc must is tuple"
+			raise Exception(msg)
+		try:
+			elems = self.driver.find_elements(*location)
+			logger.debug("一组元素找到")
+			return elems
+		except Exception as why:
+			logger.error(f"一组元素未找到，原因；{why}")
+			self.save_screenshot()
+			raise Exception(why)
 
 	def write(self, *args, into, **kwargs):
 		"""
@@ -95,13 +100,14 @@ class BasePage:
 		:param args: 要输入的内容
 		:param into: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
-		:return: 无返回值
+		:return: 元素
 		"""
 		try:
 			elem = self.find_element(location=into, **kwargs)
 			self.click(location=into)
 			elem.send_keys(*args)
 			logger.info(f"向输入框中输入内容成功")
+			return elem
 		except Exception as why:
 			logger.error(f"向输入框中输入内容失败，原因{why}")
 			self.save_screenshot()
@@ -112,7 +118,7 @@ class BasePage:
 		点击元素
 		:param location: 元素定位方式及表达式
 		:param kwargs: find_element的其它参数
-		:return: 无返回值
+		:return: 元素
 		"""
 		try:
 			elem = self.find_element(
@@ -121,6 +127,7 @@ class BasePage:
 			)
 			ActionChains(self.driver).click(elem).perform()
 			logger.info("元素点击成功")
+			return elem
 		except Exception as why:
 			logger.error(f"元素点击失败，原因：{why}")
 			self.save_screenshot()
@@ -136,9 +143,9 @@ class BasePage:
 		try:
 			elem = self.find_element(
 				location=location,
-				expected_conditions=EC.visibility_of_element_located,
 				**kwargs
 			)
+			# ActionChains(self.driver).send_keys_to_element(elem,Keys.CONTROL,"a").send_keys(Keys.BACK_SPACE).perform()
 			elem.clear()
 			logger.info("输入框清除成功")
 		except Exception as why:
