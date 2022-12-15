@@ -281,15 +281,14 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def get_texts(self, location, **kwargs) -> list:
+	def get_texts(self, location) -> list:
 		"""
 		获取一组元素的文本
 		:param location: 元素定位方式及表达式
-		:param kwargs: find_elements的其它参数
 		:return: 一组元素文本列表
 		"""
 		try:
-			elems = self.find_elements(location=location, **kwargs)
+			elems = self.find_elements(location=location)
 			texts = [elem.text for elem in elems]
 			logger.debug("获取一组元素内文本成功。")
 			return texts
@@ -298,16 +297,15 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def get_attributes(self, location, name, **kwargs) -> list:
+	def get_attributes(self, location, name) -> list:
 		"""
 		获取一组元素属性对应的文本值
 		:param location: 元素定位方式及表达式
 		:param name: 元素属性名
-		:param kwargs: find_elements的其它参数
 		:return: 一组元素属性文本值列表
 		"""
 		try:
-			elems = self.find_elements(location=location, **kwargs)
+			elems = self.find_elements(location=location)
 			texts = [elem.get_attribute(name) for elem in elems]
 			logger.debug(f"获取一组元素属性{name}文本成功。")
 			return texts
