@@ -178,28 +178,28 @@ class BasePage:
 			logger.error(f"切换或退出frame失败，原因：{why}")
 			raise Exception(why)
 
-	def switch_to_alert(self, send_keys=None, **kwargs):
+	def switch_to_alert(self, scanner=None, timeout=10, **kwargs):
 		"""
 		切换到弹窗 send_keys为None时为不输入内容，否则为输入内容
-		:param send_keys: 要输入的内容
-		:param kwargs: find_element的其它参数
+		:param scanner: 要输入的内容
+		:param timeout: 元素等待超时时间
+		:param kwargs: WebDriverWait的其它参数
 		:return: 无返回值
 		"""
 		try:
-			wait = WebDriverWait(driver=self.driver, **kwargs)
-			wait.until(EC.alert_is_present())
+			WebDriverWait(driver=self.driver, timeout=timeout, **kwargs).until(EC.alert_is_present())
 			alert = self.driver.switch_to.alert
 			if not alert:
 				msg = "alert not found"
 				logger.error("切换到弹窗失败，弹窗未发现。")
 				raise Exception(msg)
 			logger.info("切换到弹窗成功")
-			if send_keys:
-				alert.write(send_keys)
+			if scanner:
+				alert.send_keys(scanner)
 				logger.info("弹窗中输入内容成功")
+				return alert.text
 			alert.accept()
 			logger.info("弹窗已接受")
-			return alert.text
 		except Exception as why:
 			logger.error(f"切换到弹窗失败，原因：{why}")
 			self.save_screenshot()
@@ -421,7 +421,8 @@ class BasePage:
 		filename = path.joinpath(time.strftime('%H%M%S') + ".png")
 		try:
 			self.driver.get_screenshot_as_file(filename)
-			allure.attach(body=self.driver.get_screenshot_as_png(), name="image", attachment_type=allure.attachment_type.PNG)
+			allure.attach(body=self.driver.get_screenshot_as_png(), name="image",
+						  attachment_type=allure.attachment_type.PNG)
 			logger.debug(f"屏幕截图已保存，屏幕截图保存路径：{filename}")
 		except Exception as why:
 			logger.error(f"屏幕截图失败，原因：{why}")
