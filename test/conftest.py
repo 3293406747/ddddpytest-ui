@@ -9,6 +9,5 @@ def page():
 	driver = webdriver.Chrome()
 	basepage = BasePage(driver)
 	basepage.maximize_window()
-	basepage.get("https://www.baidu.com")
 	yield basepage
 	basepage.quit()

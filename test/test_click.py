@@ -1,8 +1,14 @@
+import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
 class TestBaidu:
+
+	@pytest.fixture(scope="class", autouse=True)
+	def goto(self, page):
+		page.get("https://www.baidu.com")
+
 
 	def test_write(self, page):
 		location1 = By.ID, "kw"
@@ -11,4 +17,3 @@ class TestBaidu:
 		page.click(location2)
 		WebDriverWait(page.driver,10).until(lambda x: x.title != "百度一下，你就知道")
 		assert page.driver.title == "selenium_百度搜索"
-		page.clear(location1)
