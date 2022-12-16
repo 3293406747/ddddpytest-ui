@@ -5,7 +5,6 @@ reports
 temp
 err_img
 *.pyc
-*.html
 *.json
 *.log
 *.css

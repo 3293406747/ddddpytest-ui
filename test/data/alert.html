@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>测试弹窗</title>
+    </head>
+    <body>
+        <div>
+            <h3>测试弹窗</h3>
+        </div>
+        <div>
+            <div>
+                <button id = "alert"   type = "button" onclick = myAlert()  > click me </button>
+                <p></p>
+            </div>
+            <div>
+                <button id = "confirm" type = "button" onclick = myConfirm() > click me </button>
+                <p></p>
+            </div>
+            <div>
+                <button id = "prompt"  type = "button" onclick = myPrompt() > click me </button>
+                <p></p>
+            </div>         
+        </div>
+        <script>
+            function myAlert(){
+                alert("请点击确定按钮")
+            };
+
+            function myConfirm(){
+                var element = document.getElementById("confirm");
+                var result = confirm("请做出你的选择");
+                if(result){
+                    element.innerHTML = "<font color = red > 你选择了确定 </font>";
+                }else{
+                    element.innerHTML = "<font color = green > 你选择了取消 </font>";
+                }
+            };
+
+            function myPrompt(){
+                var name = prompt('请输入你的名字:');
+                var element = document.getElementById("prompt");
+                if (name){
+                    element.innerHTML = name;
+                }else if(name == ''){
+                    element.innerHTML = "<font color = red > 姓名未输入 </font>";
+                }else{
+                    element.innerHTML = "<font color = red > 点击了取消按钮 </font>";
+                }
+            };
+        </script>  
+    </body>
+</html>
