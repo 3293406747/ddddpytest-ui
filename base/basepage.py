@@ -197,9 +197,10 @@ class BasePage:
 			if scanner:
 				alert.send_keys(scanner)
 				logger.info("弹窗中输入内容成功")
-				return alert.text
+			alertText = alert.text
 			alert.accept()
 			logger.info("弹窗已接受")
+			return alertText
 		except Exception as why:
 			logger.error(f"切换到弹窗失败，原因：{why}")
 			self.save_screenshot()

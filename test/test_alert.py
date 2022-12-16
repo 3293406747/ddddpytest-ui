@@ -1,4 +1,3 @@
-import time
 import pytest
 from selenium.webdriver.common.by import By
 from pathlib import Path
@@ -14,20 +13,23 @@ class TestBaidu:
 	def test_alert(self, page):
 		location = By.ID, "alert"
 		page.click(location)
-		page.switch_to_alert()
+		alertText = page.switch_to_alert()
+		assert alertText == "请点击确定按钮"
 
 	def test_confirm(self, page):
 		location = By.ID, "confirm"
 		page.click(location)
-		page.switch_to_alert()
+		alertText = page.switch_to_alert()
+		assert alertText == "请做出你的选择"
 
 	def test_prompt(self, page):
 		location = By.ID, "prompt"
 		page.click(location)
-		page.switch_to_alert()
+		alertText = page.switch_to_alert()
+		assert alertText == "请输入你的名字"
 
 	def test_prompt_write(self, page):
 		location = By.ID, "prompt"
 		page.click(location)
-		page.switch_to_alert(scanner="selenium")
-		time.sleep(5)
+		alertText = page.switch_to_alert(scanner="selenium")
+		assert alertText == "请输入你的名字"
