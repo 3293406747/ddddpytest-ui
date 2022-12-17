@@ -420,7 +420,7 @@ class BasePage:
 		""" 保存屏幕截图 """
 		path = Path(__file__).resolve().parent.parent.joinpath("err_img", time.strftime('%Y-%m-%d'))
 		path.mkdir(parents=True, exist_ok=True)
-		filename = path.joinpath(time.strftime('%H%M%S') + ".png")
+		filename = str(path.joinpath(time.strftime('%H%M%S') + ".png"))
 		try:
 			self.driver.get_screenshot_as_file(filename)
 			allure.attach(body=self.driver.get_screenshot_as_png(), name="image",
@@ -434,7 +434,7 @@ class BasePage:
 		""" 保存元素截图 """
 		path = Path(__file__).resolve().parent.parent.joinpath("err_img", time.strftime('%Y-%m-%d'))
 		path.mkdir(parents=True, exist_ok=True)
-		filename = path.joinpath(time.strftime('elem_%H%M%S') + ".png")
+		filename = str(path.joinpath(time.strftime('elem_%H%M%S') + ".png"))
 		try:
 			elem = self.find_element(location=location, **kwargs)
 			elem.screenshot(filename)
