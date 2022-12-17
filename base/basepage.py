@@ -217,14 +217,15 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def switch_to_window(self, current_handles: list = None, handle=None, **kwargs):
+	def switch_to_window(self, current_handles: list = None, handle=None,timeout =10, **kwargs):
 		"""
 		切换到新window或回到第一个window或到任意window
 		如果current_handles传入窗口切换之前的所有窗口句柄，则切换到新打开的窗口。可通过get_handles方法获取所有
 		窗口句柄。如果handle为None时，则切换到第一个被打开的窗口。如果handle传入窗口句柄时则切换到指定的窗口句柄
 		:param current_handles: 窗口切换之前的所有窗口句柄
 		:param handle: 要切换到的窗口句柄
-		:param kwargs: find_element的其它参数
+		:param timeout: 元素等待超时时间
+		:param kwargs: WebDriverWait的其它参数
 		:return: 无返回值
 		"""
 		try:
@@ -232,7 +233,7 @@ class BasePage:
 				if not isinstance(current_handles, list):
 					msg = "current_handles must is a list"
 					raise Exception(msg)
-				wait = WebDriverWait(driver=self.driver, **kwargs)
+				wait = WebDriverWait(driver=self.driver, timeout=timeout,**kwargs)
 				wait.until(EC.new_window_is_opened(current_handles))
 				new_handles = self.get_handles()
 				self.driver.switch_to.window(new_handles[-1])
@@ -365,7 +366,7 @@ class BasePage:
 	def checkbox_status(self, location, **kwargs) -> bool:
 		""" 检查选择框元素状态 """
 		try:
-			result = self.find_element(location=location, **kwargs)
+			result = self.find_element(location=location, **kwargs).is_selected()
 			logger.debug(f"检查选择框元素状态成功，元素状态为{'选择' if result else '未选择'}")
 			return result
 		except Exception as why:
