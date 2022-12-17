@@ -471,7 +471,7 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(
-				location=location, expected_conditions=EC.visibility_of_element_located, **kwargs
+				location=location, **kwargs
 			)
 			self.driver.execute_script("arguments[0].scrollIntoView(false);", elem)
 			logger.debug("滚动到元素可见位置成功")
