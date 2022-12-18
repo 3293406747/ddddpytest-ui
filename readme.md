@@ -1,7 +1,7 @@
 :link:[真希望你没见过什么世面，一生只爱我这张平凡的脸](https://music.163.com/#/song?id=1963720173)
 # 带带弟弟pytest-ui
 
-本项目实现接口自动化的技术选型：**Python+Selenium+Pytest+Allure+Excel+Loguru** ，
+本项目实现UI自动化的技术选型：**Python+Selenium+Pytest+Allure+Excel+Loguru** ，
 通过Python+Selenium来操作浏览器， 使用Pytest作为测试执行器，
 使用Allure生成测试报告，使用Excel管理测试数据，使用Loguru管理日志。
 
@@ -9,7 +9,7 @@
 - 多变量环境，可设置变量，全局变量及环境变量
 - 支持多套配置文件之间切换
 - 支持mysql数据库连接及操作
-- 项目运行自动生成Log日志文件、Allure报告
+- 项目运行自动生成错误截图、Log日志文件、Allure报告
 
 :loudspeaker:项目测试环境：win11+python3.10
 

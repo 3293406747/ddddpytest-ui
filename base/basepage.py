@@ -94,28 +94,30 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def write(self, *args, into, **kwargs):
+	def write(self, *args, into, msg="", **kwargs):
 		"""
 		向输入框输入内容
 		:param args: 要输入的内容
 		:param into: 元素定位方式及表达式
+		:param msg: 输入框名称
 		:param kwargs: find_element的其它参数
 		:return: 元素
 		"""
 		try:
 			elem = self.find_element(location=into, **kwargs)
 			elem.send_keys(*args)
-			logger.info(f"向输入框中输入内容成功")
+			logger.info(f"向{msg}输入框中输入内容成功")
 			return elem
 		except Exception as why:
-			logger.error(f"向输入框中输入内容失败，原因{why}")
+			logger.error(f"向输入框{msg}中输入内容失败，原因{why}")
 			self.save_screenshot()
 			raise Exception(why)
 
-	def click(self, location, **kwargs):
+	def click(self, location, msg="",**kwargs):
 		"""
 		点击元素
 		:param location: 元素定位方式及表达式
+		:param msg: 元素名称
 		:param kwargs: find_element的其它参数
 		:return: 元素
 		"""
@@ -125,17 +127,18 @@ class BasePage:
 				**kwargs
 			)
 			ActionChains(self.driver).click(elem).perform()
-			logger.info("元素点击成功")
+			logger.info(f"{msg}点击成功")
 			return elem
 		except Exception as why:
-			logger.error(f"元素点击失败，原因：{why}")
+			logger.error(f"{msg}点击失败，原因：{why}")
 			self.save_screenshot()
 			raise Exception(why)
 
-	def clear(self, location, **kwargs):
+	def clear(self, location, msg="",**kwargs):
 		"""
 		清除输入框中的内容
 		:param location: 元素定位方式及表达式
+		:param msg: 输入框名称
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
@@ -146,16 +149,17 @@ class BasePage:
 			)
 			# ActionChains(self.driver).send_keys_to_element(elem,Keys.CONTROL,"a").send_keys(Keys.BACK_SPACE).perform()
 			elem.clear()
-			logger.info("输入框清除成功")
+			logger.info(f"{msg}输入框清除成功")
 		except Exception as why:
-			logger.error(f"输入框清除失败，原因：{why}")
+			logger.error(f"{msg}输入框清除失败，原因：{why}")
 			self.save_screenshot()
 			raise Exception(why)
 
-	def switch_to_frame(self, location=None, **kwargs):
+	def switch_to_frame(self, location=None, msg="",**kwargs):
 		"""
 		切换到frame或退出frame loc为None时为退出frame,否则为进入frame
 		:param location: 元素定位方式及表达式
+		:param msg: frame名称
 		:param kwargs: find_element的其它参数
 		:return: 无返回值
 		"""
@@ -167,21 +171,22 @@ class BasePage:
 					expected_conditions=EC.frame_to_be_available_and_switch_to_it,
 					**kwargs
 				)
-				logger.info("切换到frame成功")
+				logger.info(f"切换到{msg}frame成功")
 			else:
 				# 退出frame
 				self.driver.switch_to.default_content()
-				logger.info("退出frame成功")
+				logger.info(f"退出{msg}frame成功")
 		except Exception as why:
 			self.save_screenshot()
-			logger.error(f"切换或退出frame失败，原因：{why}")
+			logger.error(f"切换或退出{msg}frame失败，原因：{why}")
 			raise Exception(why)
 
-	def switch_to_alert(self, scanner=None, timeout=10, **kwargs):
+	def switch_to_alert(self, scanner=None, timeout=10,msg="", **kwargs):
 		"""
 		切换到弹窗 send_keys为None时为不输入内容，否则为输入内容
 		:param scanner: 要输入的内容
 		:param timeout: 元素等待超时时间
+		:param msg: alert名称
 		:param kwargs: WebDriverWait的其它参数
 		:return: 无返回值
 		"""
@@ -189,19 +194,18 @@ class BasePage:
 			WebDriverWait(driver=self.driver, timeout=timeout, **kwargs).until(EC.alert_is_present())
 			alert = self.driver.switch_to.alert
 			if not alert:
-				msg = "alert not found"
-				logger.error("切换到弹窗失败，弹窗未发现。")
-				raise Exception(msg)
-			logger.info("切换到弹窗成功")
+				logger.error(f"切换到{msg}弹窗失败，弹窗未发现。")
+				raise Exception("alert not found")
+			logger.info(f"切换到{msg}弹窗成功")
 			if scanner:
 				alert.send_keys(scanner)
-				logger.info("弹窗中输入内容成功")
+				logger.info(f"{msg}弹窗中输入内容成功")
 			alertText = alert.text
 			alert.accept()
-			logger.info("弹窗已接受")
+			logger.info(f"{msg}弹窗已接受")
 			return alertText
 		except Exception as why:
-			logger.error(f"切换到弹窗失败，原因：{why}")
+			logger.error(f"切换到{msg}弹窗失败，原因：{why}")
 			self.save_screenshot()
 			raise Exception(why)
 
@@ -216,7 +220,7 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def switch_to_window(self, current_handles: list = None, handle=None,timeout =10, **kwargs):
+	def switch_to_window(self, current_handles: list = None, handle=None, timeout=10, msg="",**kwargs):
 		"""
 		切换到新window或回到第一个window或到任意window
 		如果current_handles传入窗口切换之前的所有窗口句柄，则切换到新打开的窗口。可通过get_handles方法获取所有
@@ -224,28 +228,28 @@ class BasePage:
 		:param current_handles: 窗口切换之前的所有窗口句柄
 		:param handle: 要切换到的窗口句柄
 		:param timeout: 元素等待超时时间
+		:param msg: window名称
 		:param kwargs: WebDriverWait的其它参数
 		:return: 无返回值
 		"""
 		try:
 			if current_handles:
 				if not isinstance(current_handles, list):
-					msg = "current_handles must is a list"
-					raise Exception(msg)
-				wait = WebDriverWait(driver=self.driver, timeout=timeout,**kwargs)
+					raise Exception("current_handles must is a list")
+				wait = WebDriverWait(driver=self.driver, timeout=timeout, **kwargs)
 				wait.until(EC.new_window_is_opened(current_handles))
 				new_handles = self.get_handles()
 				self.driver.switch_to.window(new_handles[-1])
-				logger.info("切换到新窗口成功。")
+				logger.info(f"切换到新窗口{msg}成功。")
 				return
 			if not handle:
 				self.driver.switch_to.window(self.get_handles()[0])
-				logger.info("切换到第一个窗口成功")
+				logger.info(f"切换到第一个窗口{msg}成功")
 			else:
 				self.driver.switch_to.window(handle)
-				logger.info("切换到指定窗口成功")
+				logger.info(f"切换到窗口{msg}成功")
 		except Exception as why:
-			logger.error(f"窗口切换失败，原因：{why}")
+			logger.error(f"窗口{msg}切换失败，原因：{why}")
 			self.save_screenshot()
 			raise Exception(why)
 

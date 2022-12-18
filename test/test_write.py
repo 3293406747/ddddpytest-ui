@@ -11,7 +11,7 @@ class TestWrite:
 
 	def test_write(self, page):
 		location = By.ID, "kw"
-		element = page.write("selenium", into=location)
+		element = page.write("selenium", into=location, msg="百度搜索")
 		assert element.get_attribute("value") == "selenium"
 
 	def test_write_keys(self, page):
