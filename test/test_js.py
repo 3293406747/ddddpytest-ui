@@ -18,4 +18,4 @@ class TestJs:
 	def test_click_js(self,page):
 		location = By.ID, "s_btn_wr"
 		page.click(location)
-		assert page.driver.current_url == "http://www.baidu.com/?tn=news"
+		assert page.driver.current_url == "https://www.baidu.com/?tn=news"
