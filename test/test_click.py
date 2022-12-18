@@ -3,14 +3,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class TestBaidu:
+class TestClick:
 
 	@pytest.fixture(scope="class", autouse=True)
 	def goto(self, page):
 		page.get("https://www.baidu.com")
 
 
-	def test_write(self, page):
+	def test_click(self, page):
 		location1 = By.ID, "kw"
 		page.write("selenium",into=location1)
 		location2 = By.ID, "su"

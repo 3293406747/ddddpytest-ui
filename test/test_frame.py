@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class TestMail:
+class TestFrame:
 
 	@pytest.fixture(scope="class", autouse=True)
 	def goto(self, page):

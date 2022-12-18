@@ -104,7 +104,6 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(location=into, **kwargs)
-			self.click(location=into)
 			elem.send_keys(*args)
 			logger.info(f"向输入框中输入内容成功")
 			return elem

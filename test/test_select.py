@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from pathlib import Path
 
 
-class TestBaidu:
+class TestSelect:
 
 	@pytest.fixture(scope="class", autouse=True)
 	def goto(self, page):

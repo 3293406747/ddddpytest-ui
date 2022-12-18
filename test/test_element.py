@@ -2,7 +2,7 @@ import pytest
 from selenium.webdriver.common.by import By
 
 
-class TestBaidu:
+class TestElement:
 
 	@pytest.fixture(scope="class",autouse=True)
 	def goto(self,page):
