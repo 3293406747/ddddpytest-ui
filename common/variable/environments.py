@@ -50,3 +50,5 @@ class Environments:
 	def pool(self) -> dict:
 		""" 获取所有变量 """
 		return self.__pool
+
+environments = Environments()

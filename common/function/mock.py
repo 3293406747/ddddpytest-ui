@@ -71,3 +71,5 @@ class Mock:
 
 	def __call__(self,item):
 		return self.__faker[item]
+
+mock = Mock()

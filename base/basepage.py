@@ -456,7 +456,7 @@ class BasePage:
 		"""
 		try:
 			elem = self.find_element(
-				location=location, expected_conditions=EC.element_to_be_clickable, **kwargs
+				location=location, **kwargs
 			)
 			self.driver.execute_script("arguments[0].click();", elem)
 			logger.info("元素点击成功")
