@@ -16,20 +16,24 @@ class BasePage:
 		初始化方法
 		:param driver: driver对象
 		:return: 无返回值
-		driver示例：
+		示例：
 			driver = webdriver.Firefox()
 		"""
 		self.driver = driver
 
 	def maximize_window(self):
-		""" 浏览器最大化 """
+		"""
+		浏览器最大化
+		:return: 无返回值
+		"""
 		try:
 			self.driver.maximize_window()
 			logger.debug("浏览器最大化成功")
 		except Exception as why:
-			logger.error(f"浏览器最大化失败，原因{why}")
+			msg = f"浏览器最大化失败，原因:{why}"
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
 	def get(self, url):
 		"""
@@ -46,245 +50,322 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def find_element(self, location: tuple, expected_conditions=None, timeout=10, **kwargs):
+	def find_element(self, location: tuple, expected_conditions=None, timeout=10, name="",**kwargs):
 		"""
 		查找单个元素
 		:param location: 元素定位方式及表达式
 		:param expected_conditions: 元素等待方式
 		:param timeout: 元素等待超时时间
+		:param name: 元素名称
 		:param kwargs: WebDriverWait对象的其它参数
-		:return: 查找到的单个元素
-		loc示例：
-			loc = (By.XPATH,"//*[@id='kw']")
-			loc = (Keys.CONTROL,"a")
-			loc = (Keys.BACK_SPACE)
+		:return: 定位到的单个元素
+		location示例：
+			location = (By.XPATH,"//*[@id='kw']")
 		expected_conditions示例：
 			expected_conditions = EC.presence_of_element_located
 			expected_conditions = EC.visibility_of_element_located
 			expected_conditions = EC.element_to_be_clickable
+		示例:
+			location = (By.XPATH,"//*[@id='kw']")
+			find_element(location)
 		"""
 		if not isinstance(location, tuple):
-			msg = "loc must is tuple"
+			msg = "location must be a tuple"
 			raise Exception(msg)
 		try:
 			wait = WebDriverWait(driver=self.driver, timeout=timeout, **kwargs)
 			method = expected_conditions or EC.presence_of_element_located
 			elem = wait.until(method(location))
-			logger.debug("元素找到")
+			msg = f"要定位的元素{name}找到"
+			logger.debug(msg)
 			return elem
 		except Exception as why:
-			logger.error(f"元素未找到，原因；{why}")
+			msg = f"要定位的元素{name}未找到，原因:{why}"
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def find_elements(self, location: tuple):
+	def find_elements(self, location: tuple,name=""):
 		"""
-			查找一组元素
-			使用方法参考find_element方法
+		查找一组元素
+		:param location: 元素定位方式及表达式
+		:param name: 元素名称
+		:return: 定位到的一组元素
+		使用方法参考find_element方法
 		"""
 		if not isinstance(location, tuple):
-			msg = "loc must is tuple"
+			msg = "location must be a tuple"
 			raise Exception(msg)
 		try:
 			elems = self.driver.find_elements(*location)
-			logger.debug("一组元素找到")
+			msg = f"要定位的一组元素{name}找到"
+			logger.debug(msg)
 			return elems
 		except Exception as why:
-			logger.error(f"一组元素未找到，原因；{why}")
+			msg = f"要定位的一组元素{name}未找到，原因:{why}"
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def write(self, *args, into, msg="", **kwargs):
+	def write(self, *args, into, name="", **kwargs):
 		"""
 		向输入框输入内容
 		:param args: 要输入的内容
 		:param into: 元素定位方式及表达式
-		:param msg: 输入框名称
-		:param kwargs: find_element的其它参数
-		:return: 元素
+		:param name: 要定位的输入框元素名称
+		:param kwargs: find_element方法的其它参数
+		:return: 定位的输入框元素
+		示例:
+			write("test",into=(By.ID, "test"),name="测试输入框")
+			write(Keys.CONTROL,"a",into=(By.ID, "test"))
+			write(Keys.ENTER,into=(By.ID, "test"))
 		"""
 		try:
-			elem = self.find_element(location=into, **kwargs)
+			elem = self.find_element(location=into, name=name,**kwargs)
 			elem.send_keys(*args)
-			logger.info(f"向{msg}输入框中输入内容成功")
+			msg = f"向元素{name}中输入内容成功"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.info(msg)
 			return elem
 		except Exception as why:
-			logger.error(f"向输入框{msg}中输入内容失败，原因{why}")
+			msg = f"向元素{name}中输入内容失败，原因:{why}"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def click(self, location, msg="",**kwargs):
+	def click(self, location, name="",**kwargs):
 		"""
 		点击元素
 		:param location: 元素定位方式及表达式
-		:param msg: 元素名称
-		:param kwargs: find_element的其它参数
-		:return: 元素
+		:param name: 要点击的元素名称
+		:param kwargs: find_element方法的其它参数
+		:return: 点击的元素
+		示例:
+		click(location=(By.ID,"submit"),name="提交按钮")
 		"""
 		try:
-			elem = self.find_element(
-				location=location,
-				**kwargs
-			)
+			elem = self.find_element(location=location,name=name,**kwargs)
 			ActionChains(self.driver).click(elem).perform()
-			logger.info(f"{msg}点击成功")
+			msg = f"元素{name}点击成功"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.info(msg)
 			return elem
 		except Exception as why:
-			logger.error(f"{msg}点击失败，原因：{why}")
+			msg = f"元素{name}点击失败，原因：{why}"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def clear(self, location, msg="",**kwargs):
+	def clear(self, location, name="",**kwargs):
 		"""
 		清除输入框中的内容
 		:param location: 元素定位方式及表达式
-		:param msg: 输入框名称
-		:param kwargs: find_element的其它参数
+		:param name: 要清除的元素名称
+		:param kwargs: find_element方法的其它参数
 		:return: 无返回值
-		"""
+		示例:
+        	clear(location=(By.ID,"test"))
+        """
 		try:
-			elem = self.find_element(
-				location=location,
-				**kwargs
-			)
-			# ActionChains(self.driver).send_keys_to_element(elem,Keys.CONTROL,"a").send_keys(Keys.BACK_SPACE).perform()
+			elem = self.find_element(location=location,name=name,**kwargs)
 			elem.clear()
-			logger.info(f"{msg}输入框清除成功")
+			msg = f"元素{name}中内容清除成功"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.info(msg)
 		except Exception as why:
-			logger.error(f"{msg}输入框清除失败，原因：{why}")
+			msg = f"元素{name}中内容清除失败，原因:{why}"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def switch_to_frame(self, location=None, msg="",**kwargs):
+	def switch_to_frame(self, location=None, name="",**kwargs):
 		"""
-		切换到frame或退出frame loc为None时为退出frame,否则为进入frame
+		切换到frame或退出frame location为None时为退出frame,不为None为进入frame
 		:param location: 元素定位方式及表达式
-		:param msg: frame名称
-		:param kwargs: find_element的其它参数
+		:param name: 要定位的frame元素名称
+		:param kwargs: find_element方法的其它参数
 		:return: 无返回值
+		示例:
+			switch_to_frame(location=(By.ID,"test"),name="测试")
+			switch_to_frame()
 		"""
 		try:
-			if location:
+			if location is not None:
 				# 切换到frame
 				self.find_element(
 					location=location,
 					expected_conditions=EC.frame_to_be_available_and_switch_to_it,
+					name=name,
 					**kwargs
 				)
-				logger.info(f"切换到{msg}frame成功")
+				msg = f"切换到{name}frame元素成功"
+				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				logger.info(msg)
 			else:
 				# 退出frame
 				self.driver.switch_to.default_content()
-				logger.info(f"退出{msg}frame成功")
+				msg = f"退出{name}frame元素成功"
+				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				logger.info(msg)
 		except Exception as why:
 			self.save_screenshot()
-			logger.error(f"切换或退出{msg}frame失败，原因：{why}")
-			raise Exception(why)
+			msg = f"切换或退出{name}frame元素失败，原因:{why}"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.error(msg)
+			raise Exception(msg)
 
-	def switch_to_alert(self, scanner=None, timeout=10,msg="", **kwargs):
+	def switch_to_alert(self, scanner=None, timeout=10,name="", **kwargs):
 		"""
-		切换到弹窗 send_keys为None时为不输入内容，否则为输入内容
+		切换到弹窗 scanner为None时为不输入内容，不为None时输入内容
 		:param scanner: 要输入的内容
 		:param timeout: 元素等待超时时间
-		:param msg: alert名称
+		:param name: 要定位的alert名称
 		:param kwargs: WebDriverWait的其它参数
 		:return: 无返回值
+		示例:
+			switch_to_alert(scanner="测试",name="alert")
+			switch_to_alert()
 		"""
 		try:
 			WebDriverWait(driver=self.driver, timeout=timeout, **kwargs).until(EC.alert_is_present())
+			# 切换到弹窗
 			alert = self.driver.switch_to.alert
 			if not alert:
-				logger.error(f"切换到{msg}弹窗失败，弹窗未发现。")
-				raise Exception("alert not found")
-			logger.info(f"切换到{msg}弹窗成功")
+				msg = f"切换到{name}弹窗元素失败，弹窗未发现。"
+				logger.error(msg)
+				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				raise Exception(msg)
+			msg = f"切换到{name}弹窗元素成功"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.info(msg)
 			if scanner:
+				# 向弹窗元素中输入内容
 				alert.send_keys(scanner)
-				logger.info(f"{msg}弹窗中输入内容成功")
+				msg = f"{name}弹窗元素中输入'{scanner}'成功"
+				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				logger.info(msg)
+			# 获取弹窗提示文本
 			alertText = alert.text
+			# 点击确认按钮
 			alert.accept()
-			logger.info(f"{msg}弹窗已接受")
+			msg = f"{name}弹窗元素已接受"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.info(msg)
 			return alertText
 		except Exception as why:
-			logger.error(f"切换到{msg}弹窗失败，原因：{why}")
+			msg = f"{name}弹窗处理失败，原因:{why}"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def get_handles(self):
-		""" 获取所有窗口句柄 """
+	def get_handles(self) -> list:
+		"""
+		获取所有窗口句柄
+		:return: 获取到的所有窗口句柄
+		"""
 		try:
 			all_handles = self.driver.window_handles
-			logger.debug("获取所有窗口句柄成功")
+			msg = "获取所有窗口句柄成功"
+			logger.debug(msg)
 			return all_handles
 		except Exception as why:
-			logger.error(f"获取所有窗口句柄失败，原因：{why}")
+			msg = f"获取所有窗口句柄失败，原因:{why}"
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def switch_to_window(self, current_handles: list = None, handle=None, timeout=10, msg="",**kwargs):
+	def switch_to_window(self, current_handles: list = None, handle=None, timeout=10, name="",**kwargs):
 		"""
 		切换到新window或回到第一个window或到任意window
 		如果current_handles传入窗口切换之前的所有窗口句柄，则切换到新打开的窗口。可通过get_handles方法获取所有
-		窗口句柄。如果handle为None时，则切换到第一个被打开的窗口。如果handle传入窗口句柄时则切换到指定的窗口句柄
+		窗口句柄。如果current_handles和handle均为None时，则切换到第一个被打开的窗口。如果current_handles为None
+		且handle传入窗口句柄时则切换到指定的窗口句柄
 		:param current_handles: 窗口切换之前的所有窗口句柄
 		:param handle: 要切换到的窗口句柄
 		:param timeout: 元素等待超时时间
-		:param msg: window名称
-		:param kwargs: WebDriverWait的其它参数
+		:param name: window窗口句柄名称
+		:param kwargs: WebDriverWait方法的其它参数
 		:return: 无返回值
+		示例:
+			switch_to_window(get_handles())
+			switch_to_window()
+			switch_to_window(handle=get_handles()[0])
 		"""
 		try:
 			if current_handles:
+				# 切换到新窗口
 				if not isinstance(current_handles, list):
-					raise Exception("current_handles must is a list")
+					msg = "current_handles must be a list"
+					raise Exception(msg)
 				wait = WebDriverWait(driver=self.driver, timeout=timeout, **kwargs)
 				wait.until(EC.new_window_is_opened(current_handles))
 				new_handles = self.get_handles()
 				self.driver.switch_to.window(new_handles[-1])
-				logger.info(f"切换到新窗口{msg}成功。")
-				return
-			if not handle:
-				self.driver.switch_to.window(self.get_handles()[0])
-				logger.info(f"切换到第一个窗口{msg}成功")
+				msg = f"切换到新窗口成功。"
+				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				logger.info(msg)
 			else:
-				self.driver.switch_to.window(handle)
-				logger.info(f"切换到窗口{msg}成功")
+				if not handle:
+					# 切换到第一个窗口
+					self.driver.switch_to.window(self.get_handles()[0])
+					msg = f"切换到第一个窗口成功"
+					allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+					logger.info(msg)
+				else:
+					# 切换到指定窗口
+					self.driver.switch_to.window(handle)
+					msg = f"切换到窗口{name}成功"
+					allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+					logger.info(msg)
 		except Exception as why:
-			logger.error(f"窗口{msg}切换失败，原因：{why}")
+			msg = f"窗口切换失败，原因:{why}"
+			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def get_text(self, location, **kwargs):
+	def get_text(self, location,name="", **kwargs):
 		"""
 		获取元素内文本
 		:param location: 元素定位方式及表达式
-		:param kwargs: find_element的其它参数
-		:return: 元素内文本
+		:param name: 要定位的元素名称
+		:param kwargs: find_element方法的其它参数
+		:return: 定位到的元素内文本
 		"""
 		try:
-			text = self.find_element(location=location, **kwargs).text
-			logger.debug("获取元素内文本成功。")
+			text = self.find_element(location=location, name=name,**kwargs).text
+			msg = f"获取{name}元素内文本成功。"
+			logger.debug(msg)
 			return text
 		except Exception as why:
-			logger.error(f"获取元素内文本失败，原因：{why}")
+			msg = f"获取{name}元素内文本失败，原因:{why}"
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
-	def get_attribute(self, location, name, **kwargs):
+	def get_attribute(self, location, attribute,name="", **kwargs):
 		"""
 		获取元素属性对应的文本值
 		:param location: 元素定位方式及表达式
-		:param name: 元素属性名
-		:param kwargs: find_element的其它参数
-		:return: 元素属性对应的文本值
+		:param attribute: 要定位的元素的元素属性名
+		:param name: 要定位的元素名称
+		:param kwargs: find_element方法的其它参数
+		:return: 元素属性内的文本值
 		"""
 		try:
-			text = self.find_element(location=location, **kwargs).get_attribute(name)
-			logger.debug(f"获取元素属性{name}文本成功。")
+			text = self.find_element(location=location,name=name, **kwargs).get_attribute(attribute)
+			msg = f"获取{name}元素的{attribute}属性文本成功。"
+			logger.debug(msg)
 			return text
 		except Exception as why:
-			logger.error(f"获取元素属性{name}文本失败。原因：{why}")
+			msg = f"获取{name}元素的{attribute}属性文本失败，原因:{why}"
+			logger.error(msg)
 			self.save_screenshot()
-			raise Exception(why)
+			raise Exception(msg)
 
 	def get_texts(self, location) -> list:
 		"""
