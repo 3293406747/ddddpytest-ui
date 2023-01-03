@@ -1,5 +1,6 @@
 import time
 from selenium.webdriver import ActionChains
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -50,7 +51,7 @@ class BasePage:
 			self.save_screenshot()
 			raise Exception(why)
 
-	def find_element(self, location: tuple, expected_conditions=None, timeout=10, name="",**kwargs):
+	def find_element(self, location: tuple, expected_conditions=None, timeout=10, name="",**kwargs) -> WebElement:
 		"""
 		查找单个元素
 		:param location: 元素定位方式及表达式
@@ -80,32 +81,11 @@ class BasePage:
 			logger.debug(msg)
 			return elem
 		except Exception as why:
-			msg = f"要定位的元素{name}未找到，原因:{why}"
+			msg = f"要定位的元素{name}未找到，元素定位方式为:{location[0]}表达式为:{location[1]},原因:{why}"
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
 
-	def find_elements(self, location: tuple,name=""):
-		"""
-		查找一组元素
-		:param location: 元素定位方式及表达式
-		:param name: 元素名称
-		:return: 定位到的一组元素
-		使用方法参考find_element方法
-		"""
-		if not isinstance(location, tuple):
-			msg = "location must be a tuple"
-			raise Exception(msg)
-		try:
-			elems = self.driver.find_elements(*location)
-			msg = f"要定位的一组元素{name}找到"
-			logger.debug(msg)
-			return elems
-		except Exception as why:
-			msg = f"要定位的一组元素{name}未找到，原因:{why}"
-			logger.error(msg)
-			self.save_screenshot()
-			raise Exception(msg)
 
 	def write(self, *args, into, name="", **kwargs):
 		"""
@@ -123,13 +103,13 @@ class BasePage:
 		try:
 			elem = self.find_element(location=into, name=name,**kwargs)
 			elem.send_keys(*args)
-			msg = f"向元素{name}中输入内容成功"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			msg = f"向{name}元素中输入内容{','.join(args)}成功"
+			allure.attach(msg,name="输入",attachment_type=allure.attachment_type.TEXT)
 			logger.info(msg)
 			return elem
 		except Exception as why:
 			msg = f"向元素{name}中输入内容失败，原因:{why}"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="输入",attachment_type=allure.attachment_type.TEXT)
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
@@ -148,12 +128,12 @@ class BasePage:
 			elem = self.find_element(location=location,name=name,**kwargs)
 			ActionChains(self.driver).click(elem).perform()
 			msg = f"元素{name}点击成功"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="点击",attachment_type=allure.attachment_type.TEXT)
 			logger.info(msg)
 			return elem
 		except Exception as why:
-			msg = f"元素{name}点击失败，原因：{why}"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			msg = f"元素{name}点击失败，原因:{why}"
+			allure.attach(msg,name="点击",attachment_type=allure.attachment_type.TEXT)
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
@@ -172,11 +152,11 @@ class BasePage:
 			elem = self.find_element(location=location,name=name,**kwargs)
 			elem.clear()
 			msg = f"元素{name}中内容清除成功"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="清除",attachment_type=allure.attachment_type.TEXT)
 			logger.info(msg)
 		except Exception as why:
 			msg = f"元素{name}中内容清除失败，原因:{why}"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="清除",attachment_type=allure.attachment_type.TEXT)
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
@@ -202,18 +182,18 @@ class BasePage:
 					**kwargs
 				)
 				msg = f"切换到{name}frame元素成功"
-				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				allure.attach(msg,name="frame",attachment_type=allure.attachment_type.TEXT)
 				logger.info(msg)
 			else:
 				# 退出frame
 				self.driver.switch_to.default_content()
 				msg = f"退出{name}frame元素成功"
-				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				allure.attach(msg,name="frame",attachment_type=allure.attachment_type.TEXT)
 				logger.info(msg)
 		except Exception as why:
 			self.save_screenshot()
 			msg = f"切换或退出{name}frame元素失败，原因:{why}"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="frame",attachment_type=allure.attachment_type.TEXT)
 			logger.error(msg)
 			raise Exception(msg)
 
@@ -236,28 +216,28 @@ class BasePage:
 			if not alert:
 				msg = f"切换到{name}弹窗元素失败，弹窗未发现。"
 				logger.error(msg)
-				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				allure.attach(msg,name="alert弹窗",attachment_type=allure.attachment_type.TEXT)
 				raise Exception(msg)
 			msg = f"切换到{name}弹窗元素成功"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="alert弹窗",attachment_type=allure.attachment_type.TEXT)
 			logger.info(msg)
 			if scanner:
 				# 向弹窗元素中输入内容
 				alert.send_keys(scanner)
 				msg = f"{name}弹窗元素中输入'{scanner}'成功"
-				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				allure.attach(msg,name="alert弹窗",attachment_type=allure.attachment_type.TEXT)
 				logger.info(msg)
 			# 获取弹窗提示文本
 			alertText = alert.text
 			# 点击确认按钮
 			alert.accept()
 			msg = f"{name}弹窗元素已接受"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="alert弹窗",attachment_type=allure.attachment_type.TEXT)
 			logger.info(msg)
 			return alertText
 		except Exception as why:
 			msg = f"{name}弹窗处理失败，原因:{why}"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="alert弹窗",attachment_type=allure.attachment_type.TEXT)
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
@@ -306,24 +286,24 @@ class BasePage:
 				new_handles = self.get_handles()
 				self.driver.switch_to.window(new_handles[-1])
 				msg = f"切换到新窗口成功。"
-				allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+				allure.attach(msg,name="窗口",attachment_type=allure.attachment_type.TEXT)
 				logger.info(msg)
 			else:
 				if not handle:
 					# 切换到第一个窗口
 					self.driver.switch_to.window(self.get_handles()[0])
 					msg = f"切换到第一个窗口成功"
-					allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+					allure.attach(msg,name="窗口",attachment_type=allure.attachment_type.TEXT)
 					logger.info(msg)
 				else:
 					# 切换到指定窗口
 					self.driver.switch_to.window(handle)
 					msg = f"切换到窗口{name}成功"
-					allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+					allure.attach(msg,name="窗口",attachment_type=allure.attachment_type.TEXT)
 					logger.info(msg)
 		except Exception as why:
 			msg = f"窗口切换失败，原因:{why}"
-			allure.attach(msg,attachment_type=allure.attachment_type.TEXT)
+			allure.attach(msg,name="窗口",attachment_type=allure.attachment_type.TEXT)
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
@@ -366,39 +346,6 @@ class BasePage:
 			logger.error(msg)
 			self.save_screenshot()
 			raise Exception(msg)
-
-	def get_texts(self, location) -> list:
-		"""
-		获取一组元素的文本
-		:param location: 元素定位方式及表达式
-		:return: 一组元素文本列表
-		"""
-		try:
-			elems = self.find_elements(location=location)
-			texts = [elem.text for elem in elems]
-			logger.debug("获取一组元素内文本成功。")
-			return texts
-		except Exception as why:
-			logger.error(f"获取一组元素内文本失败。原因：{why}")
-			self.save_screenshot()
-			raise Exception(why)
-
-	def get_attributes(self, location, name) -> list:
-		"""
-		获取一组元素属性对应的文本值
-		:param location: 元素定位方式及表达式
-		:param name: 元素属性名
-		:return: 一组元素属性文本值列表
-		"""
-		try:
-			elems = self.find_elements(location=location)
-			texts = [elem.get_attribute(name) for elem in elems]
-			logger.debug(f"获取一组元素属性{name}文本成功。")
-			return texts
-		except Exception as why:
-			logger.error(f"获取一组元素属性{name}文本失败，原因：{why}")
-			self.save_screenshot()
-			raise Exception(why)
 
 	def select(self, location, value, method="index", **kwargs):
 		"""
@@ -560,7 +507,7 @@ class BasePage:
 			self.driver.execute_script("arguments[0].scrollIntoView(false);", elem)
 			logger.debug("滚动到元素可见位置成功")
 		except Exception as why:
-			logger.error(f"滚动到元素可见位置失败，原因：{why}")
+			logger.error(f"滚动到元素可见位置失败，原因:{why}")
 			self.save_screenshot()
 			raise Exception(why)
 

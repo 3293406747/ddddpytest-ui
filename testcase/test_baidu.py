@@ -16,4 +16,4 @@ class TestBaidu:
 	@pytest.mark.parametrize("case",read_excel("baidu.xlsx"))
 	def test_select(self,case,page):
 		allure.dynamic.title(case["用例名称"])
-		page.baidu_select(case["input_text"])
+		page.baiduSelect(case["scanner"])
