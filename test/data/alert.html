@@ -1,4 +1,4 @@
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8">
         <title>测试弹窗</title>
@@ -21,32 +21,6 @@
                 <p></p>
             </div>         
         </div>
-        <script>
-            function myAlert(){
-                alert("请点击确定按钮")
-            };
-
-            function myConfirm(){
-                var element = document.getElementById("confirm");
-                var result = confirm("请做出你的选择");
-                if(result){
-                    element.innerHTML = "<font color = red > 你选择了确定 </font>";
-                }else{
-                    element.innerHTML = "<font color = green > 你选择了取消 </font>";
-                }
-            };
-
-            function myPrompt(){
-                var name = prompt('请输入你的名字');
-                var element = document.getElementById("prompt");
-                if (name){
-                    element.innerHTML = name;
-                }else if(name == ''){
-                    element.innerHTML = "<font color = red > 姓名未输入 </font>";
-                }else{
-                    element.innerHTML = "<font color = red > 点击了取消按钮 </font>";
-                }
-            };
-        </script>  
+        <script type="text/javascript" src="alert.js"></script>
     </body>
 </html>
