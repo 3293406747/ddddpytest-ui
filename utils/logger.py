@@ -1,6 +1,9 @@
+"""
+logger日志
+"""
 import sys,time
 from loguru import logger as logging
-from common.read.read_config import read_config
+from common.read.readConfig import readConfig
 
 
 class Logger:
@@ -11,12 +14,17 @@ class Logger:
 		# 控制台日志
 		self.logger.add(
 			sink=sys.stderr,
-			**read_config()["logger"]["console"],
+			**readConfig()["logger"]["console"],
 		)
 	# 文件日志
 		self.logger.add(
 			sink = f'./logs/{time.strftime("%Y-%m-%d")}/log_{time.strftime("%H_%M_%S")}.log',
-			**read_config()["logger"]["file"],
+			**readConfig()["logger"]["file"],
+		)
+		# 文件错误日志
+		self.logger.add(
+			sink=f'./logs/{time.strftime("%Y-%m-%d")}/error.log',
+			**readConfig()["logger"]["errorFile"],
 		)
 
 

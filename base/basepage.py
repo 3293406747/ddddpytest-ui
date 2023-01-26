@@ -6,7 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pathlib import Path
 import allure
-from common.logger.logger import logger
+from utils.logger import logger
 
 
 class BasePage:

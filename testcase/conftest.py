@@ -2,7 +2,7 @@ import time
 import pytest
 from selenium import webdriver
 from base.basepage import BasePage
-from common.logger.logger import logger
+from utils.logger import logger
 
 
 @pytest.fixture(scope="package",autouse=True)

@@ -6,3 +6,4 @@ loguru
 pytest
 Faker
 allure-pytest
+jsonpath

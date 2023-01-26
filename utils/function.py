@@ -1,5 +1,6 @@
-import base64,hashlib
-from common.read.read_mysql import ReadMysql
+import base64,hashlib,time
+from utils.mock import Mock
+from common.read.readMysql import ReadMysql
 
 
 def md5(string):
@@ -15,6 +16,14 @@ def bearer(string):
 		raise TypeError('string must be a string')
 	return base64.b64encode(string.encode()).decode()
 
+def mock():
+	""" 生成mock数据 """
+	return Mock()
+
 def sqlSelect(sql,key,item=None):
 	""" sql查询 """
 	return ReadMysql().execute(sql=sql,key=key,item=int(item))
+
+def gen_date_time(step):
+	str_date_time = time.strftime('%Y-%m-%d %H_%M_%S').split(' ')
+	return str_date_time[int(step)]

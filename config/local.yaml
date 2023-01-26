@@ -3,6 +3,10 @@ logger:
     level: DEBUG
     format: <green>{time:YYYY-MM-DD HH:mm:ss}</green>[<level>{level}</level>]<level>{message}</level>
     rotation: "10 MB"
+  errorFile:
+    level: ERROR
+    format: <green>{time:YYYY-MM-DD HH:mm:ss}</green>[<level>{level}</level>]<level>{message}</level>
+    rotation: "10 MB"
   console:
     level: INFO
     format: <green>{time:YYYY-MM-DD HH:mm:ss}</green>[<level>{level}</level>]<level>{message}</level>
