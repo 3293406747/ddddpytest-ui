@@ -13,7 +13,7 @@ class TestWindow:
 		currentHandles = page.get_handles()
 		page.click(location)
 		page.switch_to_window(current_handles=currentHandles)
-		assert page.driver.current_url == "http://news.baidu.com/"
+		assert page.driver.current_url == "https://news.baidu.com/"
 
 	def test_window_default(self, page):
 		page.switch_to_window()
@@ -22,4 +22,4 @@ class TestWindow:
 	def test_window(self, page):
 		currentHandles = page.get_handles()
 		page.switch_to_window(handle=currentHandles[-1])
-		assert page.driver.current_url == "http://news.baidu.com/"
+		assert page.driver.current_url == "https://news.baidu.com/"

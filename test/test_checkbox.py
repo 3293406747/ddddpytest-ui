@@ -11,16 +11,15 @@ class TestCheckbox:
 		page.get(url)
 
 	def test_checkbox(self, page):
-		location1 = By.XPATH, "//span[@id='language']/input[1]"
+		location1 = By.XPATH, "//span[@id='language']/label[1]/input"
 		page.check_checkbox(location1)
-		location2 = By.XPATH, "//span[@id='language']/input[2]"
+		location2 = By.XPATH, "//span[@id='language']/label[2]/input"
 		page.check_checkbox(location2)
-
-		location3 = By.XPATH, "//span[@id='sex']/input[1]"
+		location3 = By.XPATH, "//span[@id='sex']/label[1]/input"
 		page.check_checkbox(location3)
 
 	def test_uncheckbox(self,page):
-		location1 = By.XPATH, "//span[@id='language']/input[1]"
+		location1 = By.XPATH, "//span[@id='language']/label[1]/input"
 		page.uncheck_checkbox(location1)
-		location2 = By.XPATH, "//span[@id='language']/input[2]"
+		location2 = By.XPATH, "//span[@id='language']/label[2]/input"
 		page.uncheck_checkbox(location2)
