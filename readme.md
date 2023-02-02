@@ -25,6 +25,13 @@
 ```shell
 pip3 install -r requirements.txt
 ```
+- 下载浏览器对应版本的驱动并放到项目目录下，下载安装教程如下: https://www.cnblogs.com/123polaris/p/16435523.html
+```text
+常用浏览器驱动下载地址:
+Chrome: https://registry.npmmirror.com/binary.html?path=chromedriver
+Firfox: https://github.com/mozilla/geckodriver/releases
+Ie: http://selenium-release.storage.googleapis.com/index.html
+```
 - 下载并配置allure2，下载安装教程如下：https://blog.csdn.net/lixiaomei0623/article/details/120185069
 
 - 之后运行**main.py**，或在Terminal窗口cd到项目根目录后执行命令：
