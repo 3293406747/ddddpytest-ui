@@ -11,11 +11,11 @@ class BaiduPage(BasePage):
 	# 百度一下按钮
 	su = By.ID, "su"
 
-	def baiduSelect(self, *args):
+	def baiduSelect(self, content):
 		""" 百度搜索 """
 		if self.driver.current_url != self.url:
 			self.driver.get(self.url)
-		self.write(*args, into=self.kw,name="百度输入框")
-		self.click(location=self.su,name="百度一下按钮")
+		self.write(content, locator=self.kw, name="百度输入框")
+		self.click(locator=self.su, name="百度一下按钮")
 
 

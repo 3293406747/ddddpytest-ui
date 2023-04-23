@@ -12,7 +12,7 @@ class TestClick:
 
 	def test_click(self, page):
 		location1 = By.ID, "kw"
-		page.write("selenium",into=location1)
+		page.write("selenium", locator=location1)
 		location2 = By.ID, "su"
 		page.click(location2)
 		WebDriverWait(page.driver,10).until(lambda x: x.title != "百度一下，你就知道")

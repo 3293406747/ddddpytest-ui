@@ -11,11 +11,11 @@ class TestWrite:
 
 	def test_write(self, page):
 		location = By.ID, "kw"
-		element = page.write("selenium", into=location, name="百度搜索")
+		element = page.write("selenium", locator=location, name="百度搜索")
 		assert element.get_attribute("value") == "selenium"
 
 	def test_write_keys(self, page):
 		location = By.ID, "kw"
-		page.write(Keys.CONTROL, "a", into=location)
-		element = page.write(Keys.BACK_SPACE, into=location)
+		page.write(content=(Keys.CONTROL, "a"), locator=location)
+		element = page.write(Keys.BACK_SPACE, locator=location)
 		assert element.get_attribute("value") == ""

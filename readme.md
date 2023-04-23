@@ -1,4 +1,5 @@
 :link:[真希望你没见过什么世面，一生只爱我这张平凡的脸](https://music.163.com/#/song?id=1963720173)
+
 # 带带弟弟pytest-ui
 
 本项目实现UI自动化的技术选型：**Python+Selenium+Pytest+Allure+Excel+Loguru** ，
@@ -13,10 +14,6 @@
 - 支持mysql数据库连接及操作
 
 :loudspeaker:项目测试环境：win11+python3.10
-
-## Allure报告
-
-![allure](img/allure.png)
 
 ## Demo部署
 
@@ -38,26 +35,6 @@ Ie: http://selenium-release.storage.googleapis.com/index.html
 
 ```shell
 pytest
-```
-
-## 项目结构
-
-```text
-├─base              selenium二次封装
-├─common            公共方法
-├─config            项目配置文件
-├─img               图像文件
-├─logs              日志文件
-├─page              存放页面对象
-├─reports           allure测试报告
-├─temp              allure临时报告
-├─test              项目测试代码
-├─testcase          存放测试用例
-├─testdata          存放测试数据
-├─utils             各种工具类
-├─main.py           项目运行入口
-├─pytest.ini        pytest配置文件
-└─requirements.txt  相关依赖包文件
 ```
 
 ## demo
@@ -85,9 +62,9 @@ class BaiduPage(BasePage):
 	kw = By.ID, "kw"
 	su = By.ID, "su"
 
-	def baiduSelect(self, *args):
-		self.write(*args, into=self.kw,name="百度输入框")
-		self.click(location=self.su,name="百度一下按钮")
+	def baiduSelect(self, content):
+		self.write(content, locator=self.kw, name="百度输入框")
+		self.click(locator=self.su, name="百度一下按钮")
 ```
 
 ## 支持

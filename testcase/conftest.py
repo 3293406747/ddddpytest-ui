@@ -1,4 +1,6 @@
 import time
+from pathlib import Path
+
 import pytest
 from selenium import webdriver
 from base.basepage import BasePage
@@ -7,7 +9,7 @@ from utils.logger import logger
 
 @pytest.fixture(scope="package",autouse=True)
 def driver():
-	driver = webdriver.Chrome()
+	driver = webdriver.Firefox()
 	basepage = BasePage(driver)
 	basepage.maximize_window()
 	yield driver

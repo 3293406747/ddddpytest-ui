@@ -10,7 +10,7 @@ class TestClear:
 
 	def test_clear(self, page):
 		location = By.ID, "kw"
-		element = page.write("selenium",into=location)
+		element = page.write("selenium", locator=location)
 		assert element.get_attribute("value") == "selenium"
 		page.clear(location)
 		assert element.get_attribute("value") == ""
