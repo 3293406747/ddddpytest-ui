@@ -11,9 +11,11 @@ class TestClick:
 
 
 	def test_click(self, page):
-		location1 = By.ID, "kw"
-		page.write("selenium", locator=location1)
-		location2 = By.ID, "su"
-		page.click(location2)
+		locator1 = By.ID, "kw"
+		element = page.find_element(*locator1)
+		element.write("selenium")
+		locator2 = By.ID, "su"
+		element = page.find_element(*locator2)
+		element.click()
 		WebDriverWait(page.driver,10).until(lambda x: x.title != "百度一下，你就知道")
 		assert page.driver.title == "selenium_百度搜索"

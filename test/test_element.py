@@ -9,8 +9,8 @@ class TestElement:
 		page.get("https://www.baidu.com")
 
 	def test_element(self, page):
-		location = By.ID, "su"
-		element = page.find_element(location)
+		locator = By.ID, "su"
+		element = page.find_element(*locator)
 		assert element.get_attribute("value") == "百度一下"
 
 

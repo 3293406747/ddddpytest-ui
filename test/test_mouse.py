@@ -10,9 +10,11 @@ class TestMouse:
 
 
 	def test_mouse_hover(self, page):
-		location = By.XPATH, "//span[text()='设置']"
-		page.mouse_hover(location)
+		locator = By.XPATH, "//span[text()='设置']"
+		element = page.find_element(*locator)
+		element.mouse_hover()
 
 	def test_right_click(self, page):
-		location = By.XPATH, "//span[text()='设置']"
-		page.right_click(location)
+		locator = By.XPATH, "//span[text()='设置']"
+		element = page.find_element(*locator)
+		element.right_click()

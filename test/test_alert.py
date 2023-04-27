@@ -11,25 +11,29 @@ class TestAlert:
 		page.get(url)
 
 	def test_alert(self, page):
-		location = By.ID, "alert"
-		page.click(location)
-		alertText = page.switch_to_alert()
-		assert alertText == "请点击确定按钮"
+		locator = By.ID, "alert"
+		element = page.find_element(*locator)
+		element.click()
+		alert_text = page.switch_to_alert()
+		assert alert_text == "请点击确定按钮"
 
 	def test_confirm(self, page):
-		location = By.ID, "confirm"
-		page.click(location)
-		alertText = page.switch_to_alert()
-		assert alertText == "请做出你的选择"
+		locator = By.ID, "confirm"
+		element = page.find_element(*locator)
+		element.click()
+		alert_text = page.switch_to_alert()
+		assert alert_text == "请做出你的选择"
 
 	def test_prompt(self, page):
-		location = By.ID, "prompt"
-		page.click(location)
-		alertText = page.switch_to_alert()
-		assert alertText == "请输入你的名字"
+		locator = By.ID, "prompt"
+		element = page.find_element(*locator)
+		element.click()
+		alert_text = page.switch_to_alert()
+		assert alert_text == "请输入你的名字"
 
 	def test_prompt_write(self, page):
-		location = By.ID, "prompt"
-		page.click(location)
-		alertText = page.switch_to_alert(scanner="selenium")
-		assert alertText == "请输入你的名字"
+		locator = By.ID, "prompt"
+		element = page.find_element(*locator)
+		element.click()
+		alert_text = page.switch_to_alert(scanner="selenium")
+		assert alert_text == "请输入你的名字"

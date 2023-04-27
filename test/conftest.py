@@ -1,15 +1,13 @@
-from pathlib import Path
-
 from selenium import webdriver
 import pytest
-from base.basepage import BasePage
+from base.basepage import BaseWebDriver
 
 
 
 @pytest.fixture(scope="package", autouse=True)
 def page():
 	driver = webdriver.Firefox()
-	basepage = BasePage(driver)
-	basepage.maximize_window()
-	yield basepage
-	basepage.quit()
+	page = BaseWebDriver(driver)
+	page.maximize_window()
+	yield page
+	page.quit()

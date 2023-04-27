@@ -10,11 +10,13 @@ class TestText:
 
 
 	def test_text(self, page):
-		location = By.CSS_SELECTOR, "span#s-usersetting-top"
-		text = page.get_text(location)
+		locator = By.CSS_SELECTOR, "span#s-usersetting-top"
+		element = page.find_element(*locator)
+		text = element.text()
 		assert text == "设置"
 
 	def test_attribute(self, page):
-		location = By.ID, "su"
-		text = page.get_attribute(location,"value")
+		locator = By.ID, "su"
+		element = page.find_element(*locator)
+		text = element.get_attribute("value")
 		assert text == "百度一下"

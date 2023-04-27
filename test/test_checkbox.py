@@ -1,5 +1,4 @@
 import pytest
-from selenium.webdriver.common.by import By
 from pathlib import Path
 
 
@@ -11,15 +10,20 @@ class TestCheckbox:
 		page.get(url)
 
 	def test_checkbox(self, page):
-		location1 = By.XPATH, "//span[@id='language']/label[1]/input"
-		page.check_checkbox(location1)
-		location2 = By.XPATH, "//span[@id='language']/label[2]/input"
-		page.check_checkbox(location2)
-		location3 = By.XPATH, "//span[@id='sex']/label[1]/input"
-		page.check_checkbox(location3)
+		value1 = "//span[@id='language']/label[1]/input"
+		element1 = page.find_element(value=value1)
+		element1.check_checkbox()
+		value2 = "//span[@id='language']/label[2]/input"
+		element2 = page.find_element(value=value2)
+		element2.check_checkbox()
+		value3 = "//span[@id='sex']/label[1]/input"
+		element3 = page.find_element(value=value3)
+		element3.check_checkbox()
 
 	def test_uncheckbox(self,page):
-		location1 = By.XPATH, "//span[@id='language']/label[1]/input"
-		page.uncheck_checkbox(location1)
-		location2 = By.XPATH, "//span[@id='language']/label[2]/input"
-		page.uncheck_checkbox(location2)
+		value1 = "//span[@id='language']/label[1]/input"
+		element1 = page.find_element(value=value1)
+		element1.uncheck_checkbox()
+		value2 = "//span[@id='language']/label[2]/input"
+		element2 = page.find_element(value=value2)
+		element2.uncheck_checkbox()

@@ -10,12 +10,14 @@ class TestWrite:
 		page.get("https://www.baidu.com")
 
 	def test_write(self, page):
-		location = By.ID, "kw"
-		element = page.write("selenium", locator=location, name="百度搜索")
+		locator = By.ID, "kw"
+		element = page.find_element(*locator)
+		element.write("selenium")
 		assert element.get_attribute("value") == "selenium"
 
 	def test_write_keys(self, page):
-		location = By.ID, "kw"
-		page.write(content=(Keys.CONTROL, "a"), locator=location)
-		element = page.write(Keys.BACK_SPACE, locator=location)
+		locator = By.ID, "kw"
+		element = page.find_element(*locator)
+		element.write(content=(Keys.CONTROL, "a"))
+		element.write(Keys.BACK_SPACE)
 		assert element.get_attribute("value") == ""

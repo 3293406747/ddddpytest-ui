@@ -9,8 +9,9 @@ class TestClear:
 		page.get("https://www.baidu.com")
 
 	def test_clear(self, page):
-		location = By.ID, "kw"
-		element = page.write("selenium", locator=location)
+		locator = By.ID, "kw"
+		element = page.find_element(*locator)
+		element.write("selenium")
 		assert element.get_attribute("value") == "selenium"
-		page.clear(location)
+		element.clear()
 		assert element.get_attribute("value") == ""

@@ -11,16 +11,19 @@ class TestSelect:
 		page.get(url)
 
 	def test_select_index(self, page):
-		location = By.ID, "language"
-		page.select(location,1,"index")
-		assert page.find_element(location).get_attribute("value") == "1"
+		locator = By.ID, "language"
+		element = page.find_element(*locator)
+		element.select(1,"index")
+		assert element.get_attribute("value") == "1"
 
 	def test_select_value(self, page):
-		location = By.ID, "language"
-		page.select(location,"2","value")
-		assert page.find_element(location).get_attribute("value") == "2"
+		locator = By.ID, "language"
+		element = page.find_element(*locator)
+		element.select("2","value")
+		assert element.get_attribute("value") == "2"
 
 	def test_select_text(self, page):
-		location = By.ID, "language"
-		page.select(location,"javascript","text")
-		assert page.find_element(location).get_attribute("value") == "3"
+		locator = By.ID, "language"
+		element = page.find_element(*locator)
+		element.select("javascript","text")
+		assert element.get_attribute("value") == "3"

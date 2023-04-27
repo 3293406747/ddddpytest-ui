@@ -12,5 +12,6 @@ class TestScreenshot:
 		page.save_screenshot()
 
 	def test_elem_save_screenshot(self, page):
-		location = By.ID, "su"
-		page.elem_save_screenshot(location)
+		locator = By.ID, "su"
+		element = page.find_element(*locator)
+		element.save_screenshot()
