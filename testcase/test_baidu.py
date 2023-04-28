@@ -1,7 +1,7 @@
 import pytest, allure
-from utils.readExcel import readExcel
+from utils.read_excel import read_excel
 from page.baidu import BaiduPage
-from testcase import BASEPATH
+from testcase import BASE_PATH
 
 
 @allure.epic("ddddpytest-ui web自动化测试项目")
@@ -9,7 +9,7 @@ from testcase import BASEPATH
 class TestBaidu:
 
 	@allure.story("测试百度搜索")
-	@pytest.mark.parametrize("case", readExcel(str(BASEPATH / "baidu.xlsx")))
+	@pytest.mark.parametrize("case", read_excel(str(BASE_PATH / "baidu.xlsx")))
 	def test_select(self, case, driver):
 		allure.dynamic.title(case["用例名称"])
 		page_baidu = BaiduPage(driver)

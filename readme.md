@@ -43,12 +43,12 @@ pytest
 """ testcase/test_baidu.py """
 import pytest
 from utils.readExcel import readExcel
-from testcase import BASEPATH
+from testcase import BASE_PATH
 
 
-@pytest.mark.parametrize("case", readExcel(str(BASEPATH / "baidu.xlsx")))
+@pytest.mark.parametrize("case", readExcel(str(BASE_PATH / "baidu.xlsx")))
 def test_select(case, page):
-    page.baiduSelect(case["scanner"])
+	page.baiduSelect(case["scanner"])
 ```
 
 ```python

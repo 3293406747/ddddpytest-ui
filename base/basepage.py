@@ -1,5 +1,7 @@
 import random
 import time
+
+import allure
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -8,7 +10,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pathlib import Path
-import allure
+
 from utils.logger import logger
 
 WAITED_DEFAULT_CONFIG = {
@@ -97,7 +99,7 @@ class BaseWebDriver:
 			self.driver.switch_to.default_content()
 			msg = f"退出frame成功"
 			allure.attach(msg, name="frame", attachment_type=allure.attachment_type.TEXT)
-			logger.info(msg)
+			logger.idebug(msg)
 		except Exception as why:
 			self.save_screenshot()
 			msg = f"退出frame失败，原因:{why}"
@@ -131,20 +133,20 @@ class BaseWebDriver:
 				raise Exception(msg)
 			msg = f"切换到{name}弹窗元素成功"
 			allure.attach(msg, name="alert弹窗", attachment_type=allure.attachment_type.TEXT)
-			logger.info(msg)
+			logger.idebug(msg)
 			if scanner:
 				# 向弹窗元素中输入内容
 				alert.send_keys(scanner)
 				msg = f"{name}弹窗元素中输入'{scanner}'成功"
 				allure.attach(msg, name="alert弹窗", attachment_type=allure.attachment_type.TEXT)
-				logger.info(msg)
+				logger.idebug(msg)
 			# 获取弹窗提示文本
 			alerted_text = alert.text
 			# 点击确认按钮
 			alert.accept()
 			msg = f"{name}弹窗元素已接受"
 			allure.attach(msg, name="alert弹窗", attachment_type=allure.attachment_type.TEXT)
-			logger.info(msg)
+			logger.idebug(msg)
 			return alerted_text
 		except Exception as why:
 			msg = f"{name}弹窗处理失败，原因:{why}"
@@ -202,20 +204,20 @@ class BaseWebDriver:
 				self.driver.switch_to.window(handles[-1])
 				msg = f"切换到新窗口成功。"
 				allure.attach(msg, name="窗口", attachment_type=allure.attachment_type.TEXT)
-				logger.info(msg)
+				logger.idebug(msg)
 			else:
 				if not handle:
 					# 切换到第一个窗口
 					self.driver.switch_to.window(self.get_handles()[0])
 					msg = f"切换到第一个窗口成功"
 					allure.attach(msg, name="窗口", attachment_type=allure.attachment_type.TEXT)
-					logger.info(msg)
+					logger.idebug(msg)
 				else:
 					# 切换到指定窗口
 					self.driver.switch_to.window(handle)
 					msg = f"切换到窗口{name}成功"
 					allure.attach(msg, name="窗口", attachment_type=allure.attachment_type.TEXT)
-					logger.info(msg)
+					logger.idebug(msg)
 		except Exception as why:
 			msg = f"窗口切换失败，原因:{why}"
 			allure.attach(msg, name="窗口", attachment_type=allure.attachment_type.TEXT)
@@ -241,7 +243,7 @@ class BaseWebDriver:
 		""" 关闭当前窗口 """
 		try:
 			self.driver.close()
-			logger.info("关闭当前窗口成功")
+			logger.idebug("关闭当前窗口成功")
 		except Exception as why:
 			logger.error(f"关闭当前窗口失败，原因：{why}")
 			self.save_screenshot()
@@ -251,7 +253,7 @@ class BaseWebDriver:
 		""" 关闭浏览器 """
 		try:
 			self.driver.quit()
-			logger.info("关闭浏览器成功")
+			logger.idebug("关闭浏览器成功")
 		except Exception as why:
 			logger.error(f"关闭浏览器失败，原因：{why}")
 			self.save_screenshot()
@@ -284,7 +286,7 @@ class BaseWebElement:
 			if isinstance(content, str):
 				msg = f"向{self.name}元素中输入内容{content}成功"
 				allure.attach(msg, name="输入", attachment_type=allure.attachment_type.TEXT)
-				logger.info(msg)
+				logger.idebug(msg)
 		except Exception as why:
 			msg = f"向元素{self.name}中输入内容失败，原因:{why}"
 			allure.attach(msg, name="输入", attachment_type=allure.attachment_type.TEXT)
@@ -309,7 +311,7 @@ class BaseWebElement:
 			ActionChains(self.driver).move_to_element(self.element).click().perform()
 			msg = f"元素{self.name}点击成功"
 			allure.attach(msg, name="点击", attachment_type=allure.attachment_type.TEXT)
-			logger.info(msg)
+			logger.idebug(msg)
 		except Exception as why:
 			msg = f"元素{self.name}点击失败，原因:{why}"
 			allure.attach(msg, name="点击", attachment_type=allure.attachment_type.TEXT)
@@ -331,7 +333,7 @@ class BaseWebElement:
 			self.element.clear()
 			msg = f"元素{self.name}中内容清除成功"
 			allure.attach(msg, name="清除", attachment_type=allure.attachment_type.TEXT)
-			logger.info(msg)
+			logger.idebug(msg)
 		except Exception as why:
 			msg = f"元素{self.name}中内容清除失败，原因:{why}"
 			allure.attach(msg, name="清除", attachment_type=allure.attachment_type.TEXT)
@@ -353,7 +355,7 @@ class BaseWebElement:
 			wait.until(method)
 			msg = f"切换到{self.name}frame元素成功"
 			allure.attach(msg, name="frame", attachment_type=allure.attachment_type.TEXT)
-			logger.info(msg)
+			logger.idebug(msg)
 		except Exception as why:
 			self.save_screenshot()
 			msg = f"切换或退出{self.name}frame元素失败，原因:{why}"
@@ -423,13 +425,13 @@ class BaseWebElement:
 			select = Select(self.element)
 			if method == "index":
 				select.select_by_index(value)
-				logger.info("select下拉框/复选框元素根据index选择成功")
+				logger.idebug("select下拉框/复选框元素根据index选择成功")
 			elif method == "value":
 				select.select_by_value(value)
-				logger.info("select下拉框/复选框元素根据value选择成功")
+				logger.idebug("select下拉框/复选框元素根据value选择成功")
 			elif method == "text":
 				select.select_by_visible_text(value)
-				logger.info("select下拉框/复选框元素根据文本选择成功")
+				logger.idebug("select下拉框/复选框元素根据文本选择成功")
 			else:
 				msg = "method not supported"
 				logger.error("select下拉框/复选框元素根据文本选择失败，选择方法不支持")
@@ -449,9 +451,9 @@ class BaseWebElement:
 			self.scroll_into_view()
 			select = Select(self.element)
 			select.deselect_all()
-			logger.info("select下拉框/复选框全部元素取消选择成功")
+			logger.idebug("select下拉框/复选框全部元素取消选择成功")
 		except Exception as why:
-			logger.info(f"select下拉框/复选框全部元素取消选择失败，原因：{why}")
+			logger.idebug(f"select下拉框/复选框全部元素取消选择失败，原因：{why}")
 			self.save_screenshot()
 			raise Exception(why)
 
@@ -475,7 +477,7 @@ class BaseWebElement:
 		try:
 			if not self.checkbox_status():
 				self.click()
-				logger.info("元素选择成功")
+				logger.idebug("元素选择成功")
 			else:
 				logger.error("元素选择失败，元素已被选择")
 				# self.save_screenshot()
@@ -495,7 +497,7 @@ class BaseWebElement:
 		try:
 			if self.checkbox_status():
 				self.click()
-				logger.info("元素取消选择成功")
+				logger.idebug("元素取消选择成功")
 			else:
 				logger.error("元素取消选择失败，元素未被选择")
 				# self.save_screenshot()
@@ -527,7 +529,7 @@ class BaseWebElement:
 		"""
 		try:
 			self.driver.execute_script("arguments[0].click();", self.element)
-			logger.info("元素点击成功")
+			logger.idebug("元素点击成功")
 		except Exception as why:
 			logger.error(f"元素点击失败，原因：{why}")
 			self.save_screenshot()
@@ -541,7 +543,7 @@ class BaseWebElement:
 		"""
 		try:
 			ActionChains(driver=self.driver).move_to_element(self.element).double_click().perform()
-			logger.info("双击元素成功")
+			logger.idebug("双击元素成功")
 		except Exception as why:
 			logger.error(f"双击元素失败，原因：{why}")
 			self.save_screenshot()
@@ -555,7 +557,7 @@ class BaseWebElement:
 		"""
 		try:
 			ActionChains(driver=self.driver).context_click(self.element).perform()
-			logger.info("右击元素成功")
+			logger.idebug("右击元素成功")
 		except Exception as why:
 			logger.error(f"右击元素失败，原因：{why}")
 			self.save_screenshot()
@@ -569,9 +571,9 @@ class BaseWebElement:
 		"""
 		try:
 			ActionChains(driver=self.driver).move_to_element(self.element).perform()
-			logger.info("在元素上悬停成功")
+			logger.idebug("在元素上悬停成功")
 		except Exception as why:
-			logger.info(f"在元素上悬停失败，原因：{why}")
+			logger.idebug(f"在元素上悬停失败，原因：{why}")
 			self.save_screenshot()
 			raise Exception(why)
 
@@ -585,7 +587,7 @@ class BaseWebElement:
 		"""
 		try:
 			ActionChains(driver=self.driver).drag_and_drop_by_offset(self.element, xoffset, yoffset).perform()
-			logger.info("将元素拖拽到指定位置成功")
+			logger.idebug("将元素拖拽到指定位置成功")
 		except Exception as why:
 			logger.error(f"将元素拖拽到指定位置失败，原因：{why}")
 			self.save_screenshot()
@@ -600,7 +602,7 @@ class BaseWebElement:
 		"""
 		try:
 			ActionChains(driver=self.driver).drag_and_drop(self.element, target_element).perform()
-			logger.info("将元素拖拽到另一个元素上成功")
+			logger.idebug("将元素拖拽到另一个元素上成功")
 		except Exception as why:
 			logger.error(f"将元素拖拽到另一个元素上失败，原因：{why}")
 			self.save_screenshot()
