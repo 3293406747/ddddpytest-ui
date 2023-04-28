@@ -10,7 +10,7 @@ from testcase import BASE_PATH
 class TestBaidu:
 
 	@allure.story("测试百度搜索")
-	@pytest.mark.parametrize("case", read_excel(str(BASE_PATH / "baidu.xlsx")))
+	@pytest.mark.parametrize("case", read_excel(str(BASE_PATH.joinpath("baidu.xlsx"))))
 	def test_select(self, case, driver):
 		allure.dynamic.title(case["用例名称"])
 		page_baidu = BaiduPage(driver)

@@ -49,7 +49,7 @@ from testcase import BASE_PATH
 
 class TestBaidu:
 
-	@pytest.mark.parametrize("case", read_excel(str(BASE_PATH / "baidu.xlsx")))
+	@pytest.mark.parametrize("case", read_excel(str(BASE_PATH.joinpath("baidu.xlsx"))))
 	def test_select(self, case, driver):
 		page_baidu = BaiduPage(driver)
 		page_baidu.get(page_baidu.url)
