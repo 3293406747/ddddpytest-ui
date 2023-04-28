@@ -1,4 +1,5 @@
-import pytest, allure
+import allure
+import pytest
 from utils.read_excel import read_excel
 from page.baidu import BaiduPage
 from testcase import BASE_PATH

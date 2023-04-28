@@ -42,29 +42,40 @@ pytest
 ```python
 """ testcase/test_baidu.py """
 import pytest
-from utils.readExcel import readExcel
+from utils.read_excel import read_excel
+from page.baidu import BaiduPage
 from testcase import BASE_PATH
 
 
-@pytest.mark.parametrize("case", readExcel(str(BASE_PATH / "baidu.xlsx")))
-def test_select(case, page):
-	page.baiduSelect(case["scanner"])
+class TestBaidu:
+
+	@pytest.mark.parametrize("case", read_excel(str(BASE_PATH / "baidu.xlsx")))
+	def test_select(self, case, driver):
+		page_baidu = BaiduPage(driver)
+		page_baidu.get(page_baidu.url)
+		page_baidu.select(case["scanner"])
 ```
 
 ```python
 """ page/baidu.py """
 from selenium.webdriver.common.by import By
-from base.basepage import BasePage
+from base.basepage import BaseWebDriver
 
 
-class BaiduPage(BasePage):
+class BaiduPage(BaseWebDriver):
+	""" 百度首页 """
 	url = "https://www.baidu.com"
+	
 	kw = By.ID, "kw"
 	su = By.ID, "su"
 
-	def baiduSelect(self, content):
-		self.write(content, locator=self.kw, name="百度输入框")
-		self.click(locator=self.su, name="百度一下按钮")
+	def select(self, content):
+		""" 百度搜索 """
+		element_input = self.find_element(*self.kw,name="百度输入框")
+		element_input.write(content)
+		
+		element_button = self.find_element(*self.su,name="百度一下按钮")
+		element_button.click()
 ```
 
 ## 支持
