@@ -18,6 +18,6 @@ class TestWrite:
 	def test_write_keys(self, page):
 		locator = By.ID, "kw"
 		element = page.find_element(*locator)
-		element.write(content=(Keys.CONTROL, "a"))
+		element.write(Keys.CONTROL, "a")
 		element.write(Keys.BACK_SPACE)
 		assert element.get_attribute("value") == ""
